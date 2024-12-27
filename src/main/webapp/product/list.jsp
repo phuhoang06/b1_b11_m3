@@ -5,6 +5,7 @@
   Time: 2:26 CH
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -38,6 +39,7 @@
             text-decoration: none;
             color: #007bff;
             font-weight: 500;
+            margin-right: 10px;
         }
 
         nav a:hover {
@@ -50,7 +52,7 @@
             background: #ffffff;
             padding: 20px;
             border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Bảng hiển thị thông tin sản phẩm */
@@ -60,8 +62,8 @@
             margin-top: 10px;
         }
 
-        table tr {
-            border-bottom: 1px solid #dee2e6;
+        table thead {
+            background-color: #e9ecef;
         }
 
         table th,
@@ -69,69 +71,71 @@
             text-align: left;
             padding: 10px;
             vertical-align: middle;
+            border-bottom: 1px solid #dee2e6;
         }
 
-        table th {
-            width: 30%;
-            color: #495057;
-        }
-
-        table td {
-            width: 70%;
-        }
-
+        /* Mô tả sản phẩm (nếu cần) */
         .product-description {
-            /* Tùy chỉnh vùng mô tả, có thể thêm giới hạn chiều cao, scroll... */
             max-height: 100px;
             overflow-y: auto;
         }
-
-        /* Button hoặc link để quay về danh sách */
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: #ffffff;
+        /* Link chỉnh sửa và xóa */
+        .action-link {
+            color: #007bff;
             text-decoration: none;
-            border-radius: 4px;
+            margin-right: 10px;
         }
 
-        .back-link:hover {
-            background-color: #0056b3;
+        .action-link:hover {
+            text-decoration: underline;
         }
 
     </style>
 </head>
 <body>
-<div class="container">
-    <header>
-        <h1>Thông tin sản phẩm</h1>
-        <nav>
-            <a href="/products" class="back-link">Quay lại danh sách sản phẩm</a>
-        </nav>
-    </header>
+<header>
+    <h1>Thông tin sản phẩm</h1>
+    <nav>
+        <a href="/products?action=create">Tạo sản phẩm</a>
+    </nav>
+</header>
 
-    <main>
-        <table>
+<div class="container">
+    <table>
+        <thead>
+        <tr>
+            <th>Tên</th>
+            <th>Giá</th>
+            <th>Thông tin</th>
+            <th>Chỉnh sửa</th>
+            <th>Xóa</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach items="${requestScope['products']}" var="product">
             <tr>
-                <th>ID</th>
-                <td>${requestScope["product"].getId()}</td>
+                <td>
+                    <a href="/products?action=view&id=${product.getId()}">
+                            ${product.getName()}
+                    </a>
+                </td>
+                <td>${product.getPrice()}</td>
+                <td>${product.getInfor()}</td>
+                <td>
+                    <a class="action-link" href="/products?action=edit&id=${product.getId()}">
+                        Sửa
+                    </a>
+                </td>
+                <td>
+                    <a class="action-link" href="/products?action=delete&id=${product.getId()}">
+                        Xóa
+                    </a>
+                </td>
             </tr>
-            <tr>
-                <th>Tên sản phẩm</th>
-                <td>${requestScope["product"].getname()}</td>
-            </tr>
-            <tr>
-                <th>Giá sản phẩm</th>
-                <td>${requestScope["product"].getprice()}</td>
-            </tr>
-            <tr>
-                <th>Mô tả sản phẩm</th>
-                <td class="product-description">${requestScope["product"].getinfor()}</td>
-            </tr>
-        </table>
-    </main>
+        </c:forEach>
+        </tbody>
+    </table>
+
 </div>
 </body>
 </html>
